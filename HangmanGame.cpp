@@ -14,6 +14,7 @@ HangmanGame::HangmanGame() {
 	this->setChosenWord("");
 	this->setGuessesLeft(10);
 	this->setGameWon(false);
+	this->lettersGuessed.clear();
 }
 
 HangmanGame::~HangmanGame() {}
@@ -73,6 +74,7 @@ void HangmanGame::startGame() {
 
 void HangmanGame::takeTurn() {
 	cout << "You have " << this->getGuessesLeft() << " guesses left." << endl << endl;
+	this->displayLettersGuessed();
 	cout << "\t\t" << this->getDashWord() << endl << endl;
 
 	this->makeGuess();
@@ -83,14 +85,41 @@ void HangmanGame::takeTurn() {
 }
 
 void HangmanGame::makeGuess() {
-	// Still need to bulletproof this.  Change each char to lowercase and only allow alpha chars.
-	cout << "Your guess:\t";
-	string charIn = "";
-	cin >> charIn;
 
-	cout << "You guessed: " << charIn << endl;
-	this->setGuessChar(charIn);
+	string guessIn;
+	bool valid = false;
 
+	while(!valid) {
+		valid = true;
+
+		cout << "Your guess:\t";
+		cin >> guessIn;
+
+		if(guessIn.length() != 1) {
+		// Check to see if the input string is one character long.
+			valid = false;
+		}
+		else {
+			const char* testChars = guessIn.c_str();
+			if(tolower(testChars[0]) - 'a' < 0 || tolower(testChars[0]) - 'a' > 25) {
+			// Check to see if the character is an alphabetic character.
+				valid = false;
+			}
+			else {
+				if(this->isAlreadyGuessed(tolower(testChars[0]))) {
+				// Check to see if the player has already guessed this character.
+					valid = false;
+					cout << "You already guessed that letter." << endl;
+				}
+			}
+		}
+	}
+
+
+	const char* charIn = guessIn.c_str();
+
+	this->setGuessChar(tolower(charIn[0]));
+	this->addToLettersGuessed(tolower(charIn[0]));
 	this->updateDashWord();
 	cout << endl;
 
@@ -101,7 +130,7 @@ void HangmanGame::updateDashWord() {
 	ss.clear();
 
 	for(int i = 0; i < this->getDashWord().length(); i++) {
-		if(this->getChosenWord().substr(i, 1) == this->getGuessChar()) {
+		if(this->equals(this->getChosenWord().substr(i, 1), this->getGuessChar())) {
 			ss << this->getGuessChar();
 		}
 		else {
@@ -136,24 +165,49 @@ void HangmanGame::displayLosingMessage() {
 	cout << "\tThe word was \'" << this->getChosenWord() << "\'" << endl << endl;
 }
 
-/*bool HangmanGame::equals(string str, string ch) {
+void HangmanGame::addToLettersGuessed(char newLetter) {
+	this->lettersGuessed.push_back(newLetter);
+}
+
+bool HangmanGame::isAlreadyGuessed(char charIn) {
+	for(int i = 0; i < this->getLettersGuessed().size(); i++) {
+		if(charIn == this->getLettersGuessed()[i]) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void HangmanGame::displayLettersGuessed() {
+	cout << "Used Letters: ";
+
+	for(int i = 0; i < this->getLettersGuessed().size(); i++) {
+		if(i < this->getLettersGuessed().size() - 1) {
+			cout << this->getLettersGuessed()[i] << ", ";
+		}
+		else {
+			cout << this->getLettersGuessed()[i];
+		}
+	}
+
+	cout << endl << endl;
+}
+
+bool HangmanGame::equals(string str, char ch) {
 	if(str.length() > 1) {
 		return false;
 	}
 
-	stringstream ss;
-	ss.clear();
-	ss << ch;
+	const char* strChars = str.c_str();
 
-	string newString = ss.str();
-
-	if(newString == str) {
+	if(strChars[0] == ch) {
 		return true;
 	}
 	else {
 		return false;
 	}
-}*/
+}
 
 // ------------------------------------- GETTERS & SETTERS ----------------------------------------
 
@@ -201,11 +255,11 @@ int HangmanGame::getGuessesLeft() {
 	return this->guessesLeft;
 }
 
-void HangmanGame::setGuessChar(string newChar) {
+void HangmanGame::setGuessChar(char newChar) {
 	this->guessChar = newChar;
 }
 
-string HangmanGame::getGuessChar() {
+char HangmanGame::getGuessChar() {
 	return this->guessChar;
 }
 
@@ -215,6 +269,10 @@ void HangmanGame::setGameWon(bool newGameWon) {
 
 bool HangmanGame::getGameWon() {
 	return this->gameWon;
+}
+
+vector<char> HangmanGame::getLettersGuessed() {
+	return this->lettersGuessed;
 }
 
 // ------------------------------------------- MAIN -----------------------------------------------

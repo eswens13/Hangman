@@ -14,6 +14,8 @@
 #include<cstdlib>
 #include<ctime>
 #include<sstream>
+#include<stdio.h>
+#include<ctype.h>
 
 using namespace std;
 
@@ -33,7 +35,10 @@ class HangmanGame {
 		void checkForWin();
 		void displayWinningMessage();
 		void displayLosingMessage();
-		//bool equals(string str, char ch);
+		void addToLettersGuessed(char newLetter);
+		bool isAlreadyGuessed(char charIn);
+		void displayLettersGuessed();
+		bool equals(string str, char ch);
 
 		// -------------------------- GETTERS & SETTERS ---------------------------
 
@@ -46,10 +51,11 @@ class HangmanGame {
 		string getDashWord();
 		void setGuessesLeft(int newNum);
 		int getGuessesLeft();
-		void setGuessChar(string newChar);
-		string getGuessChar();
+		void setGuessChar(char newChar);
+		char getGuessChar();
 		void setGameWon(bool newGameWon);
 		bool getGameWon();
+		vector<char> getLettersGuessed();
 
 	private:
 		vector<string> dictionary;
@@ -57,9 +63,9 @@ class HangmanGame {
 		string chosenWord;
 		string dashWord;
 		int guessesLeft;
-		string guessChar;
+		char guessChar;
 		bool gameWon;
-
+		vector<char> lettersGuessed;
 };
 
 #endif /* HANGMANGAME_H_ */
