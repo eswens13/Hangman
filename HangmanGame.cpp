@@ -77,9 +77,12 @@ void HangmanGame::takeTurn() {
 	this->displayLettersGuessed();
 	cout << "\t\t" << this->getDashWord() << endl << endl;
 
+	this->setGuessedCorrectly(false);
 	this->makeGuess();
 
-	this->setGuessesLeft(this->getGuessesLeft() - 1);
+	if(!this->getGuessedCorrectly()) {
+		this->setGuessesLeft(this->getGuessesLeft() - 1);
+	}
 
 	this->checkForWin();
 }
@@ -132,6 +135,7 @@ void HangmanGame::updateDashWord() {
 	for(int i = 0; i < this->getDashWord().length(); i++) {
 		if(this->equals(this->getChosenWord().substr(i, 1), this->getGuessChar())) {
 			ss << this->getGuessChar();
+			this->setGuessedCorrectly(true);
 		}
 		else {
 			ss << this->getDashWord().substr(i, 1);
@@ -167,6 +171,7 @@ void HangmanGame::displayLosingMessage() {
 
 void HangmanGame::addToLettersGuessed(char newLetter) {
 	this->lettersGuessed.push_back(newLetter);
+	sort(this->lettersGuessed.begin(), this->lettersGuessed.end());
 }
 
 bool HangmanGame::isAlreadyGuessed(char charIn) {
@@ -273,6 +278,14 @@ bool HangmanGame::getGameWon() {
 
 vector<char> HangmanGame::getLettersGuessed() {
 	return this->lettersGuessed;
+}
+
+void HangmanGame::setGuessedCorrectly(bool correct) {
+	this->guessedCorrectly = correct;
+}
+
+bool HangmanGame::getGuessedCorrectly() {
+	return this->guessedCorrectly;
 }
 
 // ------------------------------------------- MAIN -----------------------------------------------

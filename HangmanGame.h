@@ -16,6 +16,7 @@
 #include<sstream>
 #include<stdio.h>
 #include<ctype.h>
+#include<algorithm>
 
 using namespace std;
 
@@ -56,6 +57,8 @@ class HangmanGame {
 		void setGameWon(bool newGameWon);
 		bool getGameWon();
 		vector<char> getLettersGuessed();
+		void setGuessedCorrectly(bool correct);
+		bool getGuessedCorrectly();
 
 	private:
 		vector<string> dictionary;
@@ -66,6 +69,7 @@ class HangmanGame {
 		char guessChar;
 		bool gameWon;
 		vector<char> lettersGuessed;
+		bool guessedCorrectly;
 };
 
 #endif /* HANGMANGAME_H_ */
